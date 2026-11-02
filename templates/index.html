@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
+</head>
+<body>
+    <nav>
+        <h2>Task Manager</h2>
+        <a href="/">Home</a>
+        <form action="/logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="{{category}}-message flash-message">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endwith %}
+    <h1>Welcome, {{ username }}!</h1>
+    <div class="task-summary">
+        <p>Total tasks: {{ total_tasks }}</p>
+        <p>Completed: {{ completed_tasks }}</p>
+        <p>Pending: {{ pending_tasks }}</p>
+    </div>
+    <div class="task-filters">
+        <a href="/">All</a>
+        <a href="/?filter=pending">Pending</a>
+        <a href="/?filter=completed">Completed</a>
+    </div>
+    <main>
+        <h1>Manage Your Tasks</h1>
+        <p>Keep track of what you need to get done.</p>
+        <a href="/add-task" class="button">Add a Task</a>
+
+        <section class="task-list">
+            <h2>Your Tasks</h2>
+            {% if tasks %}
+                {% for task in tasks %}
+                    <div class="task-item">
+                        <div class="task-info">
+                            <span class="{% if task['completed'] %}completed{% endif %}">
+                                {{ task['title'] }}
+                            </span>
+
+                            <span class="priority priority-{{ task['priority']|lower }}">
+                                {{ task['priority'] }}
+                            </span>
+                        </div>
+                        <div class="task-actions">
+                            <form action="/complete-task/{{task['id']}}" method="POST">
+                                <button type="submit" class="complete-button">
+                                    {% if task['completed'] %}
+                                        Undo
+                                    {% else %}
+                                        complete
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <form action="/delete-task/{{task['id']}}" method="POST">
+                                <button type="submit" class="delete-button">
+                                    Delete
+                                </button>
+                            </form>
+                            <form action="/edit-task/{{task['id']}}" method="GET">
+                                <button type="submit" class="edit-button">
+                                    Edit
+                                </button>
+                            </form>
+                        </div>
+                        
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>You haven't added any tasks yet.</p>
+            {% endif %}
+        </section>
+    </main>
+    <script>
+        setTimeout(function(){
+            const messages = document.querySelectorAll(".flash-message")
+            for(let i=0;i<messages.length;i++){
+                messages[i].style.display = "none";
+            }
+        },2000)
+    </script>
+</body>
+</html>

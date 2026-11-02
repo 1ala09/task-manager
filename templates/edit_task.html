@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
+</head>
+<body>
+    <nav>
+        <h2>Task Manager</h2>
+        <a href="/">Home</a>
+    </nav>
+    <main>
+        <h1>Edit Task</h1>
+        <p>Change the task name below</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="{{ category }}-message flash-message">
+                    {{messages}}
+                </div>
+            {% endfor %}
+        {% endwith %}
+        <form method = "POST">
+            <label for="task">Task name</label>
+            <input type="text"id="task" name="task" value="{{task['title']}}" required>
+            <label for="priority">Priority:</label>
+            <select name="priority" id="priority">
+                <option value="Low" {% if task['priority']=='Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if task['priority']=='Medium' %}selected{% endif %}>Medium</option>
+                <option value="High"{% if task['priority']=='High' %}selected{% endif %}>High</option>
+            </select>
+            <button type="submit" class="button">Save Changes</button>
+        </form>
+    </main>
+    <script>
+        setTimeout(function() {
+            const messages = document.querySelectorAll(".flash-message");
+            messages.forEach(function(message){
+                message.style.display="none";
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
