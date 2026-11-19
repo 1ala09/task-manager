@@ -3,3 +3,8 @@ __pycache__/
 venv/
 .env
 tasks.db
+*.db
+backups/
+Documents/
+Images/
+Music/
